@@ -1,44 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Simple Snake Game</title>
-  <style>
-    canvas { border: 5px solid white; background: black; display: block; margin: auto; }
-    body { background: #222; text-align: center; color: white; font-family: sans-serif; }
-  </style>
+    <title>Snake Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body { background: #111; color: white; text-align: center; font-family: sans-serif; margin: 0; overflow: hidden; touch-action: manipulation; }
+        canvas { border: 2px solid #444; background: black; display: block; margin: 5px auto; width: 90vw; height: 90vw; max-width: 350px; max-height: 350px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); width: 180px; margin: 10px auto; gap: 10px; }
+        button { width: 55px; height: 55px; font-size: 24px; background: #333; color: white; border: 2px solid #555; border-radius: 12px; }
+        .up { grid-column: 2; } .left { grid-column: 1; } .right { grid-column: 3; } .down { grid-column: 2; }
+    </style>
 </head>
 <body>
-  <h1>Snake Game</h1>
-  <canvas id="game" width="400" height="400"></canvas>
-  <p>Tap/Click screen to start. Use Arrow Keys or Swipe.</p>
-  <script>
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-    let score = 0;
-    let snake = [{x: 10, y: 10}];
-    let food = {x: 15, y: 15};
-    let dx = 0, dy = 0;
-    function draw() {
-      ctx.fillStyle = 'black'; ctx.fillRect(0,0,400,400);
-      ctx.fillStyle = 'red'; ctx.fillRect(food.x*20, food.y*20, 18, 18);
-      ctx.fillStyle = 'lime';
-      snake.forEach(p => ctx.fillRect(p.x*20, p.y*20, 18, 18));
-      let head = {x: snake[0].x + dx, y: snake[0].y + dy};
-      snake.unshift(head);
-      if(head.x===food.x && head.y===food.y) {
-        food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*20)};
-      } else { snake.pop(); }
-      if(head.x<0 || head.x>=20 || head.y<0 || head.y>=20) {
-        snake = [{x: 10, y: 10}]; dx = 0; dy = 0;
-      }
-    }
-    document.addEventListener('keydown', e => {
-      if(e.key==='ArrowUp' && dy===0) { dx=0; dy=-1; }
-      if(e.key==='ArrowDown' && dy===0) { dx=0; dy=1; }
-      if(e.key==='ArrowLeft' && dx===0) { dx=-1; dy=0; }
-      if(e.key==='ArrowRight' && dx===0) { dx=1; dy=0; }
-    });
-    setInterval(draw, 100);
-  </script>
+    <h3 style="margin:5px;">Snake Mobile</h3>
+    <canvas id="game" width="400" height="400"></canvas>
+    <div class="grid">
+        <button class="up" onclick="changeDir(0,-1)">↑</button>
+        <button class="left" onclick="changeDir(-1,0)">←</button>
+        <button class="right" onclick="changeDir(1,0)">→</button>
+        <button class="down" onclick="changeDir(0,1)">↓</button>
+    </div>
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        let snake = [{x: 10, y: 10}], food = {x: 15, y: 15}, dx = 0, dy = 0;
+        function changeDir(x, y) { if(x !== -dx || y !== -dy) { dx = x; dy = y; } }
+        function draw() {
+            ctx.fillStyle = 'black'; ctx.fillRect(0,0,400,400);
+            ctx.fillStyle = '#ff4444'; ctx.fillRect(food.x*20, food.y*20, 18, 18);
+            ctx.fillStyle = '#00ff00'; snake.forEach(p => ctx.fillRect(p.x*20, p.y*20, 18, 18));
+            let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            if(head.x<0 || head.x>=20 || head.y<0 || head.y>=20) { snake=[{x:10,y:10}]; dx=0; dy=0; }
+            snake.unshift(head);
+            if(head.x===food.x && head.y===food.y) {
+                food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*20)};
+            } else { snake.pop(); }
+        }
+        setInterval(draw, 140);
+    </script>
 </body>
 </html>
